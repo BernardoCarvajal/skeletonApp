@@ -1,10 +1,15 @@
+import { provideRouter } from '@angular/router';
+import { ChecklistPageModule } from './checklist.module';
+import { FormsModule } from '@angular/forms';
+import { DatabaseService } from '../../services/database.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChecklistPage } from './checklist.page';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import 'jasmine';
+
 
 describe('ChecklistPage', () => {
   let component: ChecklistPage;
@@ -12,9 +17,10 @@ describe('ChecklistPage', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChecklistPage ],
-      imports: [
-        HttpClientModule,
+      providers: [provideRouter([]), { provide: DatabaseService, useValue: { isInitialized: () => true, init: async () => {}, obtenerChecklists: async () => [] } }],
+
+      imports: [ChecklistPageModule,
+        HttpClientTestingModule, FormsModule,
         IonicModule.forRoot(),
         IonicStorageModule.forRoot(),
         BrowserAnimationsModule
@@ -23,6 +29,7 @@ describe('ChecklistPage', () => {
 
     fixture = TestBed.createComponent(ChecklistPage);
     component = fixture.componentInstance;
+    spyOn(component, 'obtenerUbicacion').and.resolveTo();
     fixture.detectChanges();
   });
 

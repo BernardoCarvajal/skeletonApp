@@ -10,6 +10,7 @@ import { DatabaseService } from '../../services/database.service';
 import { Network } from '@capacitor/network';
 
 @Component({
+  standalone: false,
   selector: 'app-checklist',
   templateUrl: './checklist.page.html',
   styleUrls: ['./checklist.page.scss'],

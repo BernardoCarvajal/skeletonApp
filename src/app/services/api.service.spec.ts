@@ -17,11 +17,12 @@ describe('ApiService', () => {
 
   it('debería obtener patentes', () => {
     service.getPatentes().subscribe(patentes => {
-      expect(patentes).toBeTruthy();
-      expect(patentes.length).toBeGreaterThan(0);
+      expect(patentes).toEqual(['ABCD12']);
     });
 
-    const req = httpMock.expectOne('http://localhost:3000/vehiculos');
+    const req = httpMock.expectOne(request => new URL(request.url).href === 'http://localhost:3000/vehiculos');
     expect(req.request.method).toBe('GET');
+    req.flush([{ patente: 'ABCD12' }]);
+    httpMock.verify();
   });
 });

@@ -5,6 +5,7 @@ import { User } from '../../interfaces/user.interface';
 import { StorageService } from '../../services/storage.service';
 
 @Component({
+  standalone: false,
   selector: 'app-perfil',
   templateUrl: 'perfil.page.html',
   styleUrls: ['perfil.page.scss'],
