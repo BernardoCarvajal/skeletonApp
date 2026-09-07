@@ -35,57 +35,66 @@
 </ion-header>
 
 <ion-content>
-  <div class="spinner-container" *ngIf="isLoading">
-    <ion-spinner name="bubbles" color="primary"></ion-spinner>
-    <ion-text color="medium">
-      <p>Cargando historial...</p>
-    </ion-text>
-  </div>
+  @if (isLoading) {
+    <div class="spinner-container">
+      <ion-spinner name="bubbles" color="primary"></ion-spinner>
+      <ion-text color="medium">
+        <p>Cargando historial...</p>
+      </ion-text>
+    </div>
+  }
 
   <div class="historial-container">
     <div class="cards-grid" [@tableAnimation]="dataSource.data.length">
-      <ion-card *ngFor="let item of dataSource.data" class="historial-card animate__animated animate__fadeIn">
-        <ion-card-header>
-          <ion-card-subtitle>
-            <ion-icon name="calendar-outline"></ion-icon> {{item.fecha}} - {{item.hora}}
-          </ion-card-subtitle>
-          <ion-card-title>
-            <ion-icon name="car-outline"></ion-icon> {{item.patente}}
-          </ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content>
-          <div class="location-info" *ngIf="item.ubicacion">
-            <ion-chip color="primary">
-              <ion-icon name="location-outline"></ion-icon>
-              <ion-label>{{item.ubicacion.direccion || 'Ubicación registrada'}}</ion-label>
-            </ion-chip>
-          </div>
-
-          <div class="items-grid">
-            <ion-item *ngFor="let verificacion of item.items">
-              <ion-icon 
-                [name]="verificacion.estado ? 'checkmark-circle' : 'close-circle'"
-                [color]="verificacion.estado ? 'success' : 'danger'"
-                slot="start">
-              </ion-icon>
-              <ion-label>
-                <h3>{{verificacion.nombre}}</h3>
-                <p *ngIf="!verificacion.estado && verificacion.comentario">
-                  {{verificacion.comentario}}
-                </p>
-              </ion-label>
-            </ion-item>
-          </div>
-
-          <div class="observaciones" *ngIf="item.observaciones">
-            <ion-note color="medium">
-              <ion-icon name="chatbox-outline"></ion-icon>
-              {{item.observaciones}}
-            </ion-note>
-          </div>
-        </ion-card-content>
-      </ion-card>
+      @for (item of dataSource.data; track item) {
+        <ion-card class="historial-card animate__animated animate__fadeIn">
+          <ion-card-header>
+            <ion-card-subtitle>
+              <ion-icon name="calendar-outline"></ion-icon> {{item.fecha}} - {{item.hora}}
+            </ion-card-subtitle>
+            <ion-card-title>
+              <ion-icon name="car-outline"></ion-icon> {{item.patente}}
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @if (item.ubicacion) {
+              <div class="location-info">
+                <ion-chip color="primary">
+                  <ion-icon name="location-outline"></ion-icon>
+                  <ion-label>{{item.ubicacion.direccion || 'Ubicación registrada'}}</ion-label>
+                </ion-chip>
+              </div>
+            }
+            <div class="items-grid">
+              @for (verificacion of item.items; track verificacion) {
+                <ion-item>
+                  <ion-icon
+                    [name]="verificacion.estado ? 'checkmark-circle' : 'close-circle'"
+                    [color]="verificacion.estado ? 'success' : 'danger'"
+                    slot="start">
+                  </ion-icon>
+                  <ion-label>
+                    <h3>{{verificacion.nombre}}</h3>
+                    @if (!verificacion.estado && verificacion.comentario) {
+                      <p>
+                        {{verificacion.comentario}}
+                      </p>
+                    }
+                  </ion-label>
+                </ion-item>
+              }
+            </div>
+            @if (item.observaciones) {
+              <div class="observaciones">
+                <ion-note color="medium">
+                  <ion-icon name="chatbox-outline"></ion-icon>
+                  {{item.observaciones}}
+                </ion-note>
+              </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
     </div>
   </div>
 </ion-content>

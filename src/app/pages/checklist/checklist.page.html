@@ -47,10 +47,12 @@
             <ion-label position="stacked">
               Patente <ion-text color="danger">*</ion-text>
             </ion-label>
-            <ion-select [(ngModel)]="selectedPatente" interface="action-sheet" placeholder="Seleccione una patente">
-              <ion-select-option *ngFor="let patente of patentes" [value]="patente">
-                {{patente}}
-              </ion-select-option>
+            <ion-select name="patente" [(ngModel)]="selectedPatente" interface="action-sheet" placeholder="Seleccione una patente">
+              @for (patente of patentes; track patente) {
+                <ion-select-option [value]="patente">
+                  {{patente}}
+                </ion-select-option>
+              }
             </ion-select>
           </ion-item>
         </ion-card-content>
@@ -67,7 +69,7 @@
           <ion-item>
             <ion-label position="stacked">Coordenadas</ion-label>
             <ion-text>
-              Lat: {{ubicacion.latitude | number:'1.6-6'}}, 
+              Lat: {{ubicacion.latitude | number:'1.6-6'}},
               Lng: {{ubicacion.longitude | number:'1.6-6'}}
             </ion-text>
           </ion-item>
@@ -75,10 +77,10 @@
             <ion-label position="stacked">Dirección</ion-label>
             <ion-text>{{ubicacion.direccion || 'Obteniendo ubicación...'}}</ion-text>
           </ion-item>
-          <ion-button expand="block" 
-                    (click)="obtenerUbicacion()" 
-                    color="secondary"
-                    class="ion-margin-top">
+          <ion-button expand="block"
+            (click)="obtenerUbicacion()"
+            color="secondary"
+            class="ion-margin-top">
             <ion-icon name="refresh-outline" slot="start"></ion-icon>
             Actualizar Ubicación
           </ion-button>
@@ -91,43 +93,50 @@
         </ion-card-header>
         <ion-card-content>
           <div class="checklist-items">
-            <ng-container *ngFor="let item of checklistItems">
+            @for (item of checklistItems; track item) {
               <ion-item class="checklist-item" [@fadeInOut]="true">
                 <ion-icon [name]="item.icon" slot="start" [@iconRotate]="item.status === 'Bueno'"></ion-icon>
                 <ion-label>
                   {{item.title}} <ion-text color="danger">*</ion-text>
                 </ion-label>
-                <ion-select [(ngModel)]="item.status" 
-                            interface="action-sheet" 
-                            placeholder="Seleccione estado"
-                            (ionChange)="checklistItemChanged(item)">
+                <ion-select [name]="'status-' + item.title" [(ngModel)]="item.status"
+                  interface="action-sheet"
+                  placeholder="Seleccione estado"
+                  (ionChange)="checklistItemChanged(item)">
                   <ion-select-option value="Bueno">Bueno</ion-select-option>
                   <ion-select-option value="Malo">Malo</ion-select-option>
                 </ion-select>
               </ion-item>
-
-              <ion-item *ngIf="needsComments(item.status)" [@fadeInOut]="true">
-                <ion-label position="stacked">
-                  Comentarios <ion-text color="danger">*</ion-text>
-                </ion-label>
-                <ion-textarea [(ngModel)]="item.comments" 
-                              placeholder="Describa el problema...">
-                </ion-textarea>
-              </ion-item>
-            </ng-container>
+              @if (needsComments(item.status)) {
+                <ion-item [@fadeInOut]="true">
+                  <ion-label position="stacked">
+                    Comentarios <ion-text color="danger">*</ion-text>
+                  </ion-label>
+                  <ion-textarea [name]="'comments-' + item.title" [(ngModel)]="item.comments"
+                    placeholder="Describa el problema...">
+                  </ion-textarea>
+                </ion-item>
+              }
+            }
           </div>
         </ion-card-content>
       </ion-card>
 
       <div class="action-buttons">
-        <ion-button expand="block" 
-                  (click)="onSubmit()" 
-                  [disabled]="isSubmitting"
-                  color="primary"
-                  class="ion-margin-top">
-          <ion-spinner name="crescent" *ngIf="isSubmitting"></ion-spinner>
-          <span *ngIf="!isSubmitting">Guardar Checklist</span>
-          <span *ngIf="isSubmitting">Guardando...</span>
+        <ion-button expand="block"
+          (click)="onSubmit()"
+          [disabled]="isSubmitting"
+          color="primary"
+          class="ion-margin-top">
+          @if (isSubmitting) {
+            <ion-spinner name="crescent"></ion-spinner>
+          }
+          @if (!isSubmitting) {
+            <span>Guardar Checklist</span>
+          }
+          @if (isSubmitting) {
+            <span>Guardando...</span>
+          }
         </ion-button>
 
         <ion-button expand="block" color="medium" (click)="cleanForm()" [disabled]="isSubmitting">
@@ -138,7 +147,9 @@
     </form>
   </div>
 
-  <div *ngIf="isSubmitting" class="spinner-overlay">
-    <mat-spinner diameter="60"></mat-spinner>
-  </div>
+  @if (isSubmitting) {
+    <div class="spinner-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+    </div>
+  }
 </ion-content>

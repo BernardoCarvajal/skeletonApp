@@ -23,6 +23,7 @@ export interface ItemHistorial {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-historial',
   templateUrl: './historial.page.html',
   styleUrls: ['./historial.page.scss'],

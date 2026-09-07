@@ -1,3 +1,5 @@
+import { DatabaseService } from '../../services/database.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HistorialPage } from './historial.page';
 import { HttpClientModule } from '@angular/common/http';
@@ -16,9 +18,10 @@ describe('HistorialPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: DatabaseService, useValue: { isInitialized: () => true, init: async () => {}, obtenerChecklists: async () => [] } }],
       imports: [
         HistorialPageModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         IonicModule.forRoot(),
         BrowserAnimationsModule,
         MatTableModule,

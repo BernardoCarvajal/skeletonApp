@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage-angular';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],

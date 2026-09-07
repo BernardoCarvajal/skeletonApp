@@ -21,146 +21,138 @@
     </div>
 
     <!-- Formulario de Login -->
-    <form *ngIf="!showRegister" (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
-      <div class="spinner-container" *ngIf="isLoading">
-        <ion-spinner name="circles" color="primary"></ion-spinner>
-        <ion-text color="medium">
-          <p>Verificando credenciales...</p>
-        </ion-text>
+    @if (!showRegister) {
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
+        @if (isLoading) {
+          <div class="spinner-container">
+            <ion-spinner name="circles" color="primary"></ion-spinner>
+            <ion-text color="medium">
+              <p>Verificando credenciales...</p>
+            </ion-text>
+          </div>
+        }
+        <mat-form-field appearance="outline">
+          <mat-label>Usuario</mat-label>
+          <input matInput
+            type="text"
+            name="username"
+            required
+            [(ngModel)]="credentials.username"
+            minlength="3"
+            maxlength="8">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-error>Usuario inválido</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <input matInput
+              [type]="hidePassword ? 'password' : 'text'"
+              name="password"
+              required
+              [(ngModel)]="credentials.password"
+              minlength="4"
+              maxlength="4">
+              <mat-icon matSuffix (click)="hidePassword = !hidePassword">
+                {{hidePassword ? 'visibility_off' : 'visibility'}}
+              </mat-icon>
+              <mat-error>Contraseña inválida</mat-error>
+            </mat-form-field>
+            <ion-button expand="block"
+              type="submit"
+              [disabled]="!loginForm.valid || isLoading">
+              <ion-icon slot="start" name="log-in-outline"></ion-icon>
+              Iniciar Sesión
+            </ion-button>
+            <ion-button expand="block"
+              fill="clear"
+              (click)="toggleRegister()">
+              ¿No tienes cuenta? Regístrate aquí
+            </ion-button>
+          </form>
+        }
+
+        <!-- Formulario de Registro -->
+        @if (showRegister) {
+          <form (ngSubmit)="onRegister()" #registerForm="ngForm" class="register-form">
+            <ion-item>
+              <ion-label position="floating">Nombre de Usuario</ion-label>
+              <ion-input type="text"
+                [(ngModel)]="newUser.username"
+                name="username"
+                required
+                minlength="3"
+              maxlength="8"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Contraseña</ion-label>
+              <ion-input type="password"
+                [(ngModel)]="newUser.password"
+                name="password"
+                required
+                minlength="4"
+              maxlength="4"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Nombre</ion-label>
+              <ion-input type="text"
+                [(ngModel)]="newUser.firstName"
+                name="firstName"
+              required></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Apellido</ion-label>
+              <ion-input type="text"
+                [(ngModel)]="newUser.lastName"
+                name="lastName"
+              required></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">RUT</ion-label>
+              <ion-input type="text"
+                [(ngModel)]="newUser.rut"
+                name="rut"
+              required></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Teléfono</ion-label>
+              <ion-input type="tel"
+                [(ngModel)]="newUser.phone"
+                name="phone"
+              required></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Empresa</ion-label>
+              <ion-input type="text"
+                [(ngModel)]="newUser.empresa"
+                name="empresa"
+              required></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Cargo</ion-label>
+              <ion-select [(ngModel)]="newUser.cargo" name="cargo" required>
+                <ion-select-option value="Conductor">Conductor</ion-select-option>
+                <ion-select-option value="Supervisor">Supervisor</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Licencia</ion-label>
+              <ion-select [(ngModel)]="newUser.licencia" name="licencia" required>
+                <ion-select-option value="A4">A4</ion-select-option>
+                <ion-select-option value="A5">A5</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-button expand="block"
+              type="submit"
+              [disabled]="!registerForm.valid || isLoading">
+              <ion-icon slot="start" name="person-add"></ion-icon>
+              Registrarse
+            </ion-button>
+            <ion-button expand="block"
+              fill="clear"
+              (click)="toggleRegister()">
+              Volver al login
+            </ion-button>
+          </form>
+        }
       </div>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Usuario</mat-label>
-        <input matInput
-               type="text"
-               name="username"
-               required
-               [(ngModel)]="credentials.username"
-               minlength="3"
-               maxlength="8">
-        <mat-icon matSuffix>person</mat-icon>
-        <mat-error>Usuario inválido</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Contraseña</mat-label>
-        <input matInput
-               [type]="hidePassword ? 'password' : 'text'"
-               name="password"
-               required
-               [(ngModel)]="credentials.password"
-               minlength="4"
-               maxlength="4">
-        <mat-icon matSuffix (click)="hidePassword = !hidePassword">
-          {{hidePassword ? 'visibility_off' : 'visibility'}}
-        </mat-icon>
-        <mat-error>Contraseña inválida</mat-error>
-      </mat-form-field>
-
-      <ion-button expand="block" 
-                  type="submit" 
-                  [disabled]="!loginForm.valid || isLoading">
-        <ion-icon slot="start" name="log-in-outline"></ion-icon>
-        Iniciar Sesión
-      </ion-button>
-
-      <ion-button expand="block" 
-                  fill="clear"
-                  (click)="toggleRegister()">
-        ¿No tienes cuenta? Regístrate aquí
-      </ion-button>
-    </form>
-
-    <!-- Formulario de Registro -->
-    <form *ngIf="showRegister" (ngSubmit)="onRegister()" #registerForm="ngForm" class="register-form">
-      <ion-item>
-        <ion-label position="floating">Nombre de Usuario</ion-label>
-        <ion-input type="text" 
-                   [(ngModel)]="newUser.username" 
-                   name="username"
-                   required
-                   minlength="3"
-                   maxlength="8"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input type="password" 
-                   [(ngModel)]="newUser.password" 
-                   name="password"
-                   required
-                   minlength="4"
-                   maxlength="4"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-input type="text" 
-                   [(ngModel)]="newUser.firstName" 
-                   name="firstName"
-                   required></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Apellido</ion-label>
-        <ion-input type="text" 
-                   [(ngModel)]="newUser.lastName" 
-                   name="lastName"
-                   required></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">RUT</ion-label>
-        <ion-input type="text" 
-                   [(ngModel)]="newUser.rut" 
-                   name="rut"
-                   required></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Teléfono</ion-label>
-        <ion-input type="tel" 
-                   [(ngModel)]="newUser.phone" 
-                   name="phone"
-                   required></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Empresa</ion-label>
-        <ion-input type="text" 
-                   [(ngModel)]="newUser.empresa" 
-                   name="empresa"
-                   required></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Cargo</ion-label>
-        <ion-select [(ngModel)]="newUser.cargo" name="cargo" required>
-          <ion-select-option value="Conductor">Conductor</ion-select-option>
-          <ion-select-option value="Supervisor">Supervisor</ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Licencia</ion-label>
-        <ion-select [(ngModel)]="newUser.licencia" name="licencia" required>
-          <ion-select-option value="A4">A4</ion-select-option>
-          <ion-select-option value="A5">A5</ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-button expand="block" 
-                  type="submit"
-                  [disabled]="!registerForm.valid || isLoading">
-        <ion-icon slot="start" name="person-add"></ion-icon>
-        Registrarse
-      </ion-button>
-
-      <ion-button expand="block" 
-                  fill="clear"
-                  (click)="toggleRegister()">
-        Volver al login
-      </ion-button>
-    </form>
-  </div>
-</ion-content>
+    </ion-content>

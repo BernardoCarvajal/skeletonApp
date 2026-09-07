@@ -1,3 +1,4 @@
+import { StorageService } from '../../services/storage.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PerfilPage } from './perfil.page';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,6 +19,7 @@ describe('PerfilPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: StorageService, useValue: { get: async () => ({ id: '1', nombre: 'Test' }) } }],
       declarations: [ PerfilPage ],
       imports: [
         HttpClientModule,
